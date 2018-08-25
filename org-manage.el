@@ -1,7 +1,7 @@
 ;;; org-manage.el --- Manage org files in a given directory
 
 ;; Copyright (C) 2013-2016 Daniel German and contributors
-;; 
+;;
 ;; Author: Daniel German <dmg@uvic.ca> and contributors
 ;; URL: http://github.com/dmgerman/org-manage/
 ;; Package-Requires: ((org "8.0") (ctable "0.1.1"))
@@ -13,7 +13,7 @@
 ;; Yoshinari Nomura.
 ;;
 ;; Licensed under the same terms as Org-mode (http://orgmode.org/).
-;; 
+;;
 ;; This module allows easy overview of any org file in a directory
 ;; (and its subdirectories).  It shows in a table each of the org
 ;; files, its title and last modification time. The user can easily
@@ -39,10 +39,10 @@
 
 
 ;;; the default location of the org files
-(defvar org-manage-directory-org  "~/org/" 
+(defvar org-manage-directory-org  "~/org/"
   "the default directory to scan where  org files are located. It is trimmed from the list of filenames.")
 
-(defvar org-manage-date-format "%y/%m/%d %H:%M" 
+(defvar org-manage-date-format "%y/%m/%d %H:%M"
   "default date format for last modification of files")
 
 ;;; Summary Mode
@@ -69,14 +69,14 @@
 
 
 ;; internal variables
-(defvar org-manage-table-cp nil 
+(defvar org-manage-table-cp nil
   "Keeps the table to display")
 
 
 (defun org-manage-directory-files-recursive (directory match maxdepth ignore)
-  "List files in DIRECTORY and in its sub-directories. 
-   Return files that match the regular expression MATCH but ignore     
-   files and directories that match IGNORE (IGNORE is tested before MATCH. Recurse only 
+  "List files in DIRECTORY and in its sub-directories.
+   Return files that match the regular expression MATCH but ignore
+   files and directories that match IGNORE (IGNORE is tested before MATCH. Recurse only
    to depth MAXDEPTH. If zero or negative, then do not recurse"
   (let* ((files-list '())
          (current-directory-list
@@ -84,7 +84,7 @@
     ;; while we are in the current directory
      (while current-directory-list
        (let ((f (car current-directory-list)))
-         (cond 
+         (cond
           ((and
 	    ignore
 	    (string-match ignore f)
@@ -103,7 +103,7 @@
            (file-readable-p f)
            (not (string-equal ".." (substring f -2)))
            (not (string-equal "." (substring f -1)))
-           (> maxdepth 0))     
+           (> maxdepth 0))
            ;; recurse only if necessary
            (setq files-list (append files-list (org-manage-directory-files-recursive f match (- maxdepth -1) ignore)))
            )
@@ -134,14 +134,14 @@
  (setq org-manage-summary-mode-map
        (org-manage-merge-keymap org-manage-summary-mode-map ctbl:table-mode-map)))
 
-;; summary 
+;; summary
 (defun org-manage-summary-mode ()
   "Major mode for listing and controlling org-mode based blog articles.
 \\{org-manage-summary-mode-map}"
   (kill-all-local-variables)
   (setq truncate-lines t)
   (use-local-map org-manage-summary-mode-map)
-  (make-local-variable 'org-manage-table-cp) 
+  (make-local-variable 'org-manage-table-cp)
   (setq major-mode 'org-manage-summary-mode
         mode-name  "org-manage")
   (setq buffer-undo-list t
@@ -251,7 +251,7 @@
   (mapcar
    (lambda (filename)
      (org-manage-extract-properties-file filename))
-   (org-manage-directory-files-recursive 
+   (org-manage-directory-files-recursive
     (expand-file-name org-manage-directory-org) org-manage-org-files-match org-manage-max-recursion org-manage-org-ignore
     )
    ))
@@ -269,7 +269,7 @@
     (erase-buffer)
     (insert (org-manage-summary-header title))
     (save-excursion
-      (setq cp (org-manage-summary-table 
+      (setq cp (org-manage-summary-table
                 (org-manage-scan-files) org-manage-summary-mode-map)))
     (ctbl:cp-add-click-hook
      cp
