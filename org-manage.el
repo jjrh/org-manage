@@ -212,6 +212,12 @@
              :min-width 20
              :max-width 30)
             (make-ctbl:cmodel
+             :title "Keywords"
+             :align 'left
+             :min-width 40
+             :max-width 140)
+
+            (make-ctbl:cmodel
              :title "Filename"
              :align 'left
              :min-width 40
@@ -222,6 +228,7 @@
   (let ((title "")
 	(category "")
 	(shortname "short")
+	(keywords "")
 	(prefix (expand-file-name org-manage-directory-org))
 	plist)
     (if filename
@@ -231,18 +238,23 @@
 	      (setq shortname (substring filename (length prefix)))
 	      )
 	  (goto-char (point-min))
-	  (save-match-data 
+	  (save-match-data
 	    (if (re-search-forward "#\\+TITLE: *\\(.+\\)$" org-manage-org-max-searched-bytes t)
 		(setq title (match-string 1))
+	      (setq title shortname)
 	      )
 	    (goto-char (point-min))
 	    (if (re-search-forward "#\\+CATEGORY: *\\(.+\\)$" org-manage-org-max-searched-bytes t)
 		(setq category (match-string 1))
 	      )
+	    (if (re-search-forward "#\\+KEYWORDS: *\\(.+\\)$" org-manage-org-max-searched-bytes t)
+		(setq keywords (match-string 1))
+	      )
+
 	    )
           (setq plist (list  ; build list: date;title;category;shortname;filename
 		       (format-time-string org-manage-date-format (nth 5 (file-attributes filename 'string)))
-		        title category shortname filename)
+		        title category keywords shortname filename)
 		)
 	  )
       plist)))
